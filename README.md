@@ -14,7 +14,8 @@ A local-first web portal prototype for recording branch IT support requests, tra
 - Submit an IT problem with problem type, description, optional computer IP, and automatic submission time.
 - View their branch's request status and Zonal IT's resolution notes; submit feedback after resolution.
 - Forward faulty hardware with branch, device, model, serial number, sender, fault description, and timestamp.
-- Download the requisition template and upload a completed form or supporting document.
+- Download the requisition template and submit completed requisitions to Zonal IT. Submitted requisitions are private to Zonal IT and the administrator.
+- View and download shared files uploaded by Zonal IT.
 
 ### Zonal IT users
 
@@ -24,6 +25,13 @@ A local-first web portal prototype for recording branch IT support requests, tra
 - Receive Head Office items into a separate inventory ledger, then record deployment to a branch.
 - Review pending incident and hardware items through the notification menu.
 - Generate date-filtered Incident/Problem, Repair Hardware, and New Inventory reports for print or CSV export.
+- Upload files shared with every branch. Branch-submitted requisitions are not shown to branch users.
+
+### Administrator
+
+- Create Zonal IT user accounts, change names and user IDs, reset passwords, block/unblock accounts, and disable accounts.
+- View all uploaded files and requisitions, rename or replace files, and delete files.
+- The administrator role manages portal accounts and data. Application source code and deployments remain controlled through the source repository and hosting account.
 
 The Head Office inventory ledger follows the paper register fields: Item, Date Received, Received From, Brand & Model, Serial No., Status, Signature Received, Where Supplied, Date Supplied, Sign IT, Take Date, and Remarks. Items still held at the Zonal Office are highlighted; deployment details are stored separately from the hardware repair log.
 
@@ -51,7 +59,9 @@ The SQLite database is created automatically at `data/zonal-it.sqlite` when an A
 
 ### Local sign-in notes
 
-The local preview seeds development users and branch data automatically. Branch preview sign-in requires a branch selection; development authentication is intentionally simplified and is not the bank's real username/password service. Zonal IT development sign-in follows the local demo-account records. Do not reuse demo credentials or development password logic in a live environment.
+The local preview seeds development users, branch data, and an administrator account automatically. The local-only administrator sign-in is **user ID `admin` / password `Admin@123456`**. Branch preview sign-in requires a branch selection; development authentication is intentionally simplified and is not the bank's real username/password service. Zonal IT development sign-in follows the local demo-account records. Do not reuse demo credentials or development password logic in a live environment.
+
+For a production-like environment, configure `PORTAL_SESSION_SECRET` with a unique secret and set `PORTAL_ADMIN_USERNAME` plus `PORTAL_ADMIN_PASSWORD` (at least 12 characters) before the first administrator sign-in. The account is only bootstrapped if no matching admin account exists. Remove the bootstrap password from the environment after initialization and change it through an approved account-maintenance process. Never deploy with the local preview fallback credentials.
 
 ## Software and architecture
 
@@ -79,7 +89,7 @@ The browser UI calls Next.js route handlers. Those handlers validate the local s
 
 ## Current scope and known gaps
 
-- The current portal has Branch User and Zonal IT operational views. A separate Super Admin role and its independent controls have not yet been implemented.
+- The portal includes Branch User, Zonal IT, and Super Admin roles, but authentication and operations remain prototype-only and require a formal security review before wider use.
 - Authentication is prototype-only. There is no integration with the bank's identity provider, SSO, directory, or official credential verification service.
 - Records and uploaded files are stored on the local machine running the portal. Production-grade shared storage, backup/restore, monitoring, audit retention, and recovery are not configured here.
 - Notifications are displayed from pending records in the portal; no bank email or SMS gateway is connected.
