@@ -26,6 +26,7 @@ A local-first web portal prototype for recording branch IT support requests, tra
 - Review pending incident and hardware items through the notification menu.
 - Generate date-filtered Incident/Problem, Repair Hardware, and New Inventory reports for print or CSV export.
 - Upload files shared with every branch. Branch-submitted requisitions are not shown to branch users.
+- Modify or delete uploaded files and submitted requisitions from the file list.
 
 ### Administrator
 

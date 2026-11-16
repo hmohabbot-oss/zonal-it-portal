@@ -43,7 +43,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = readSession(request);
   if (!session) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
-  if (session.role !== "super_admin") return NextResponse.json({ error: "Only an administrator can modify shared files." }, { status: 403 });
+  if (session.role === "branch_user") return NextResponse.json({ error: "Only Zonal IT or an administrator can modify files." }, { status: 403 });
   const { id } = await context.params;
   const form = await request.formData().catch(() => null);
   const title = String(form?.get("title") || "").trim().slice(0, 160);
@@ -69,7 +69,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
 export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = readSession(request);
   if (!session) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
-  if (session.role !== "super_admin") return NextResponse.json({ error: "Only an administrator can delete files." }, { status: 403 });
+  if (session.role === "branch_user") return NextResponse.json({ error: "Only Zonal IT or an administrator can delete files." }, { status: 403 });
   const { id } = await context.params;
   const database = db();
   const row = database.prepare("SELECT storage_path FROM documents WHERE id=?").get(Number(id)) as {storage_path:string}|undefined;
